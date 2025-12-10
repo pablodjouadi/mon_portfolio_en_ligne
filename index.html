@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Portfolio CV</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* Navigation */
+        nav {
+            background: #2c3e50;
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        nav ul li {
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            transition: background 0.3s;
+            border-radius: 5px;
+        }
+
+        nav ul li:hover {
+            background: #34495e;
+        }
+
+        /* Container principal */
+        .container {
+            margin-top: 70px;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* Pages */
+        .page {
+            display: none;
+            padding: 3rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeIn 0.5s;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Page Accueil spécifique */
+        #accueil {
+            background-image: url('images/blanc.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            padding: 4rem 2rem;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* Encart blanc rectangulaire */
+        .welcome-card, .about-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Premier encart - Bienvenue */
+        .welcome-content {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        .welcome-left {
+            flex: 1;
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-divider {
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, #3498db, transparent);
+            margin-bottom: 2rem;
+        }
+
+        .welcome-name {
+            font-size: 1.8rem;
+            color: #34495e;
+            font-weight: 300;
+        }
+
+        .welcome-right {
+            flex-shrink: 0;
+        }
+
+        .profile-photo {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #3498db;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .profile-placeholder {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 4rem;
+            font-weight: bold;
+            border: 5px solid #3498db;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        /* Second encart - À propos */
+        .about-title {
+            font-size: 2rem;
+            color: #3498db;
+            margin-bottom: 1.5rem;
+        }
+
+        .about-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .welcome-content {
+                flex-direction: column-reverse;
+                text-align: center;
+            }
+
+            .welcome-divider {
+                background: linear-gradient(to right, transparent, #3498db, transparent);
+            }
+
+            .profile-photo, .profile-placeholder {
+                width: 150px;
+                height: 150px;
+            }
+        }
+
+        /* En-tête de page */
+        .page-header {
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+        }
+
+        /* Section */
+        .section {
+            background: #f8f9fa;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .section h2 {
+            color: #3498db;
+            margin-bottom: 1rem;
+        }
+
+        /* Grille pour expériences */
+        .experience-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .experience-item {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 3rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            text-align: justify;
+        }
+
+        .experience-item h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .experience-date {
+            color: #7f8c8d;
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+
+        /* Compétences */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .skill-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        /* Compétences linguistiques avec niveaux */
+        .language-item {
+            background: white;
+            padding: 1.5rem 1rem;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .language-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.3rem;
+        }
+
+        .language-level {
+            font-style: italic;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        /* Formulaire de contact */
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background: #3498db;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            background: #2980b9;
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Footer */
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <ul>
+            <li onclick="showPage('accueil')">Accueil</li>
+            <li onclick="showPage('experiences')">Expériences</li>
+            <li onclick="showPage('formations')">Formations</li>
+            <li onclick="showPage('competences')">Compétences</li>
+            <li onclick="showPage('contact')">Contact</li>
+        </ul>
+    </nav>
+
+    <!-- Container -->
+    <div class="container">
+        <!-- Page Accueil -->
+        <div id="accueil" class="page active">
+            <!-- Premier encart - Bienvenue -->
+            <div class="welcome-card">
+                <div class="welcome-content">
+                    <div class="welcome-left">
+                        <h1 class="welcome-title">Djouadi Pablo</h1>
+                        <div class="welcome-divider"></div>
+                        <p class="welcome-name">Bienvenue sur mon Portfolio</p>
+                    </div>
+                    <div class="welcome-right">
+                        <!-- Placeholder pour photo - remplacez par <img src="votre-photo.jpg" class="profile-photo" alt="Photo de profil"> -->
+                        <img src="images/portrait.jpg" class="profile-photo" alt="Photo de profil">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Second encart - À propos -->
+            <div class="about-card">
+                <h2 class="about-title">À propos de moi</h2>
+                <p class="about-text">
+                    Ingénieur géomaticien en formation dans le Master SIGMA, co-accrédité par l'INP ENSAT et 
+                    l'Université Toulouse Jean Jaurès. Passionné par la cartographie et la géomatique, mon 
+                    ambition est d'exercer cette discipline comme profession à temps plein.
+
+                    <br><br>
+
+                    Pour en savoir plus sur mon parcours et mes projets, explorez mon site.
+                </p>
+            </div>
+        </div>
+
+        <!-- Page Expériences -->
+        <div id="experiences" class="page">
+            <div class="page-header">
+                <h1>Mes Expériences Professionnelles</h1>
+            </div>
+            <div class="experience-grid">
+                <div class="experience-item">
+                    <h3>Opérateur SIG - CNRS UMR PASSAGES 5319 – Pôle ARD</h3>
+                    <p class="experience-date">Juin 2025 - Août 2025</p>
+                    <p>J'ai effectué un stage d'Opérateur SIG au sein du CNRS UMR PASSAGES 5319, spécifiquement
+                       au pôle ARD (Analyse et Représentation des Données). Sous la supervision d'experts tels
+                       qu'Olivier Pissoat (Cartographe) et Grégoire Lecampion (Statisticien), j'ai contribué à plusieurs
+                       projets de recherche. Mes missions principales incluaient une étude statistique approfondie sur R
+                       pour le colloque de géographie Géopoint, aboutissant à des rapports cartographiques et
+                       statistiques. J'ai également participé au projet Sphérographia du CNRS, axé sur l'étude et
+                       l'analyse des globes virtuels. Enfin, j'ai collaboré avec Solange Pupiers sur une étude de terrain
+                       concernant l'impact et l'analyse spatiale de l'érosion côtière à Mimizan Plage.
+                       
+                       <br><br>
+
+                       Projet Sphérographia : https://spherographia.cnrs.fr/?Projet
+                
+                    </p>
+                </div>
+                <div class="experience-item">
+                    <h3>Accompagnement de délégations européennes - ANAA</h3>
+                    <p class="experience-date">Juin 2024</p>
+                    <p>Dans le cadre du projet Erasmus consacré à la transition agroécologique en viticulture, j'ai eu
+                       l'opportunité d'accompagner plusieurs délégations européennes. Cette expérience m'a permis de
+                       favoriser les échanges interculturels, de valoriser les pratiques durables dans le secteur viticole et
+                       de contribuer à la diffusion de connaissances sur les enjeux de la transition écologique.
+                        
+                    </p>
+                </div>
+                <div class="experience-item">
+                    <h3>Soutien logistique - ANAA</h3>
+                    <p class="experience-date">Mai 2021</p>
+                    <p>Lors de l'édition 2021 de Bordeaux Fête le Vin, j'ai apporté un appui logistique au Marché local de
+                       producteurs. Cette mission m'a permis de contribuer à la mise en valeur des produits du terroir et
+                       de soutenir l'organisation d'un événement d'envergure régionale.
+                    </p>
+                 </div>
+                <div class="experience-item">
+                    <h3>Accompagnement de projets - Acto (Actions et Territoires – Lisbonne)</h3>
+                    <p class="experience-date">2016 – 2017</p>
+                    <p>Entre 2016 et 2017, j'ai participé de manière récurrente à l'accompagnement de projets de
+                       coopération européenne et de délégations internationales.
+                       
+                       <br><br>
+                       
+                       J'ai également assuré des missions de traduction entre le français et le portugais,
+                       facilitant la communication entre les acteurs européens et renforçant le bon déroulement des échanges.
+                    </p>
+            </div>
+            </div>
+        </div>
+
+        <!-- Page Formations -->
+        <div id="formations" class="page">
+            <div class="page-header">
+                <h1>Mes Formations</h1>
+            </div>
+            <div class="experience-grid">
+                <div class="experience-item">
+                    <h3>Master 1 - SIGMA - INP ENSAT, Université Jean Jaurès</h3>
+                    <p class="experience-date">2025 - 2026</p>
+                    <p>Actuellement en première année du Master SIGMA (Systèmes d'Information Géographique et Métiers de l'Aménagement), j'acquiers des compétences solides dans le traitement, l'analyse et la valorisation des données spatiales. Ma formation me permet de développer une expertise technique en ingénierie de bases de données spatiales, télédétection, algorithmique et programmation (SQL, HTML, Python). J'approfondis également mes connaissances en programmation SIG avancée, en visualisation de données et en webmapping, dans une perspective d'application pluridisciplinaire.</p>
+                </div>
+    
+            <div class="experience-item">
+                    <h3>Licence 3 GAER - Université Bordeaux Montaigne</h3>
+                    <p class="experience-date">2022 - 2025</p>
+                    <p>La formation Géographie, Aménagement, Environnement et Ressources m'a permis d'acquérir une compréhension approfondie des dynamiques territoriales et environnementales, en combinant une approche théorique rigoureuse à des méthodes d'analyse appliquée. J'y ai développé des compétences solides en géographie numérique, en cartographie et en géomatique (SIG), ainsi qu'une maîtrise des analyses statistiques bi et multivariées pour le traitement et l'interprétation des données spatiales.
+
+                        <br><br>
+
+                       La formation m'a également permis d'aborder la géographie sociale et physique, les diagnostics de risques environnementaux, et la gestion de données quantitatives et qualitatives, dans une logique pluridisciplinaire liant aménagement du territoire, observation des milieux et appui à la décision.</p>
+                </div>
+
+            <div class="experience-item">
+                    <h3>Licence 2 Droit - Université Bordeaux Montesquieu</h3>
+                    <p class="experience-date">2019 - 2022</p>
+                    <p>Cette formation m'a permis d'acquérir une solide culture juridique et une compréhension approfondie du fonctionnement politique, économique et administratif de l'État. Elle m'a également apporté une rigueur méthodologique essentielle, tant dans la recherche et l'analyse de textes juridiques que dans la rédaction argumentée.
+
+                        <br><br>
+
+                       J'y ai développé des compétences en organisation du travail, en gestion du temps et en esprit de synthèse, des qualités transférables à la conduite de projets et à la gestion de données dans des contextes administratifs et territoriaux complexes.</p>
+                </div>
+
+            <div class="experience-item">
+                    <h3>Baccalauréat économique et social - Lycée Français Charles Lepierre - Lisbonne</h3>
+                    <p class="experience-date">2010 - 2019</p>
+                    <p>Mention Bien. Spécialité science politique, option DNL.
+
+                        <br><br>
+
+                       Ayant suivi ma scolarité au sein du lycée et du collège français de Lisbonne, j'ai évolué dans un environnement multiculturel et plurilingue. Cette expérience m'a permis de maîtriser couramment le français, le portugais, l'espagnol et l'anglais, et de développer une forte capacité d'adaptation ainsi qu'une ouverture internationale dans ma manière de communiquer et de travailler.
+                       </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page Compétences -->
+        <div id="competences" class="page">
+            <div class="page-header">
+                <h1>Mes Compétences</h1>
+            </div>
+            <div class="section">
+                <h2>Compétences techniques</h2>
+                <div class="skills-grid">
+                    <div class="skill-item">HTML/CSS</div>
+                    <div class="skill-item">SQL</div>
+                    <div class="skill-item">Python</div>
+                    <div class="skill-item">QGIS</div>
+                    <div class="skill-item">SGBD</div>
+                    <div class="skill-item">PgAdim4</div>
+                    <div class="skill-item">Magrit</div>
+                    <div class="skill-item">Webmapping</div>
+                    <div class="skill-item">ArcGis Online / Pro</div>
+                    <div class="skill-item">Adobe Illustrator</div>
+                    <div class="skill-item">Affinity</div>
+                    <div class="skill-item">Rstudio</div>
+                    <div class="skill-item">Télédétection</div>
+                    <div class="skill-item">OTB</div>
+                    <div class="skill-item">Analyse statistique</div>
+                    <div class="skill-item">Diagnostics de risques</div>
+                </div>
+            </div>
+            <div class="section">
+                <h2>Compétences humaines</h2>
+                <div class="skills-grid">
+                    <div class="skill-item">Polyvalent</div>
+                    <div class="skill-item">Autonome</div>
+                    <div class="skill-item">Organisé</div>
+                    <div class="skill-item">Travail en équipe</div>
+                    <div class="skill-item">Adaptation</div>
+                    <div class="skill-item">Esprit d'équipe</div>
+                    <div class="skill-item">Rigueur</div>
+                    <div class="skill-item">Volonté d'apprendre</div>
+                </div>
+            </div>
+            <div class="section">
+                <h2>Compétences linguistiques</h2>
+                <div class="skills-grid">
+                    <div class="language-item">
+                        <div class="language-name">Français</div>
+                        <div class="language-level">Langue maternelle</div>
+                    </div>
+                    <div class="language-item">
+                        <div class="language-name">Portugais</div>
+                        <div class="language-level">Langue maternelle</div>
+                    </div>
+                    <div class="language-item">
+                        <div class="language-name">Anglais</div>
+                        <div class="language-level">Bilingue</div>
+                    </div>
+                    <div class="language-item">
+                        <div class="language-name">Espagnol</div>
+                        <div class="language-level">Courant</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page Contact -->
+        <div id="contact" class="page">
+            <div class="page-header">
+                <h1>Me Contacter</h1>
+            </div>
+            <div class="section">
+                <h2>Coordonnées</h2>
+                <p><strong>Email:</strong> pablodjouadisoulard@gmail.com</p>
+                <p><strong>Téléphone:</strong> +33 623272609</p>
+                <p><strong>LinkedIn:</strong> www.linkedin.com/in/pablo-djouadi-399723352</p>
+            </div>
+            
+            <div class="section">
+                <h2>Me contacter directement</h2>
+                <div class="contact-form">
+                    <div class="form-group">
+                        <label for="name">Nom complet *</label>
+                        <input type="text" id="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Objet *</label>
+                        <input type="text" id="subject" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message *</label>
+                        <textarea id="message" rows="6" required></textarea>
+                    </div>
+                    <button onclick="sendEmail()" class="submit-btn">Envoyer le message</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Mon Portfolio - Tous droits réservés</p>
+    </footer>
+
+    <script>
+        // Fonction pour afficher une page spécifique
+        function showPage(pageId) {
+            // Masquer toutes les pages
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+
+            // Afficher la page sélectionnée
+            const selectedPage = document.getElementById(pageId);
+            if (selectedPage) {
+                selectedPage.classList.add('active');
+            }
+
+            // Scroll vers le haut
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initialisation au chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Portfolio chargé avec succès!');
+            showPage('accueil');
+        });
+
+        // Fonction pour envoyer un email
+        function sendEmail() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+
+            // Vérification que tous les champs sont remplis
+            if (!name || !email || !subject || !message) {
+                alert('Veuillez remplir tous les champs obligatoires.');
+                return;
+            }
+
+            // Construction du corps du mail
+            const body = `Nom: ${name}%0D%0AEmail: ${email}%0D%0A%0D%0AMessage:%0D%0A${message}`;
+
+            // Création du lien mailto
+            const mailtoLink = `mailto:pablodjouadisoulard@gmail.com?subject=${encodeURIComponent(subject)}&body=${body}`;
+
+            // Ouverture du client mail
+            window.location.href = mailtoLink;
+
+            // Message de confirmation
+            alert('Votre client mail va s\'ouvrir. Veuillez vérifier et envoyer le message.');
+        }
+    </script>
+</body>
+</html>
