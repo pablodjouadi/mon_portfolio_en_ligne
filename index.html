@@ -355,6 +355,7 @@
             .experience-date { font-size: 0.9rem; }
             .experience-item p { font-size: 0.95rem; }
             
+            /* Compétences : 2 par 2 sur téléphone */
             .skills-grid { 
                 grid-template-columns: repeat(2, 1fr); 
                 gap: 0.6rem; 
@@ -372,28 +373,48 @@
             .languages-globe-title { padding: 0.8rem; }
             .languages-globe-title h3 { font-size: 0.95rem; }
             
+            /* Projets : titre en haut, image en bas, texte à la suite */
             .project-wrapper, .project-card {
                 padding: 1.5rem;
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .project-text-section, .project-content {
+                order: 1;
             }
             
             .project-text-section p::before, .project-content p::before {
-                width: 131.25px;
-                height: 175px;
-            }
-            
-            .project-image-section, .project-image {
-                width: 106.25px;
-                height: 150px;
-                top: 1.5rem;
-                right: 1.5rem;
+                display: none; /* Supprime l'espace flottant */
             }
             
             .project-text-section h3, .project-content h3 {
                 font-size: 1.2rem;
+                order: 1;
             }
             
             .project-text-section p, .project-content p {
                 font-size: 0.95rem;
+                order: 3;
+            }
+            
+            .project-image-section, .project-image {
+                position: static; /* Plus de position absolue */
+                width: 100%;
+                height: auto;
+                max-width: 300px;
+                aspect-ratio: 150 / 212.5;
+                margin: 1rem auto;
+                order: 2;
+            }
+            
+            .academic-level {
+                order: 1;
+            }
+            
+            .pdf-button {
+                order: 4;
+                margin-top: 1rem;
             }
             
             footer { padding: 0.8rem; font-size: 0.9rem; }
@@ -923,7 +944,7 @@
                 <div class="contact-accordion-inner">
                     <div class="contact-section">
                         <h3>Coordonnées</h3>
-                        <p><strong>Email:</strong> <a href="/cdn-cgi/l/email-protection#fd8d9c9f9192999792889c99948e9288919c8f99bd9a909c9491d39e9290"><span class="__cf_email__" data-cfemail="9dedfcfff1f2f9f7f2e8fcf9f4eef2e8f1fceff9ddfaf0fcf4f1b3fef2f0">[email&#160;protected]</span></a></p>
+                        <p><strong>Email:</strong> <a href="mailto:pablodjouadisoulard@gmail.com">pablodjouadisoulard@gmail.com</a></p>
                         <p><strong>Téléphone:</strong> +33 623272609</p>
                         <p><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/pablo-djouadi-399723352" target="_blank">www.linkedin.com/in/pablo-djouadi-399723352</a></p>
                     </div>
@@ -1346,7 +1367,7 @@
     <p>&copy; 2025 Djouadi Pablo - Tous droits réservés</p>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/globe.gl"></script>
 <script src="https://unpkg.com/topojson-client@3"></script>
 <script>
@@ -1467,6 +1488,10 @@
 
         const topoURL = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 
+        // Détecter si on est sur mobile
+        const isMobile = window.innerWidth <= 480;
+        const defaultAltitude = isMobile ? 2.2 : 1.7;
+
         const languagesGlobe = Globe()
             .width(container.offsetWidth)
             .height(container.offsetHeight)
@@ -1477,7 +1502,7 @@
             .pointsData([])
             (container);
 
-        languagesGlobe.pointOfView({ lat: 20, lng: 0, altitude: 1.7 });
+        languagesGlobe.pointOfView({ lat: 20, lng: 0, altitude: defaultAltitude });
 
         fetch(topoURL)
             .then(r => r.json())
@@ -1538,7 +1563,7 @@
     let pageNum = 1;
     let pageRendering = false;
     let pageNumPending = null;
-    let scale = 2.5; // Augmenté à 2.5 pour haute qualité
+    let scale = 1.2; // Zoom réduit par défaut
     const canvas = document.getElementById('pdf-canvas');
     const ctx = canvas.getContext('2d');
 
@@ -1551,10 +1576,8 @@
     function renderPage(num) {
         pageRendering = true;
         pdfDoc.getPage(num).then(function(page) {
-            // Augmenter la résolution pour améliorer la qualité
             const viewport = page.getViewport({ scale: scale });
             
-            // Utiliser devicePixelRatio pour un rendu haute résolution
             const outputScale = window.devicePixelRatio || 1;
             
             canvas.width = Math.floor(viewport.width * outputScale);
@@ -1623,14 +1646,14 @@
 
     // Zoom -
     function zoomOut() {
-        if (scale <= 0.75) return; // Limite minimale augmentée
+        if (scale <= 0.5) return;
         scale -= 0.25;
         queueRenderPage(pageNum);
     }
 
     // Réinitialiser le zoom
     function resetZoom() {
-        scale = 2.5; // Augmenté pour meilleure qualité
+        scale = 1.2;
         queueRenderPage(pageNum);
     }
 
@@ -1638,11 +1661,9 @@
     function openPDFLightbox(pdfPath) {
         const pdfLightbox = document.getElementById('pdf-lightbox');
         
-        // Vérifier si on est en file:// (local)
         const isLocal = window.location.protocol === 'file:';
         
         if (isLocal) {
-            // En local, utiliser une iframe à la place
             alert('Mode local détecté.\n\nPDF.js ne fonctionne pas en local (file://).\n\nVeuillez utiliser un serveur local (ex: Live Server) ou héberger votre site.\n\nOuverture du PDF dans un nouvel onglet...');
             window.open(pdfPath, '_blank');
             return;
@@ -1656,7 +1677,6 @@
 
         console.log('Tentative de chargement du PDF:', pdfPath);
 
-        // Options de chargement avec désactivation de CORS si nécessaire
         const loadingTask = pdfjsLib.getDocument({
             url: pdfPath,
             cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
@@ -1668,7 +1688,7 @@
             pdfDoc = pdfDoc_;
             document.getElementById('page-count').textContent = pdfDoc.numPages;
             pageNum = 1;
-            scale = 2.5; // Meilleure qualité par défaut
+            scale = 1.2; // Zoom réduit par défaut
             renderPage(pageNum);
             pdfLightbox.classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -1685,13 +1705,12 @@
         pdfLightbox.classList.remove('active');
         document.body.style.overflow = 'auto';
         
-        // Réinitialiser
         if (ctx) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
         pdfDoc = null;
         pageNum = 1;
-        scale = 2.5; // Réinitialisé à 2.5
+        scale = 1.2;
     }
 
     // INITIALISATION
